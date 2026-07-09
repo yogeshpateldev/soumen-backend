@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Message from "../models/Message.js";
+import { sendContactEmails } from "../utils/email.js";
 
 const router = Router();
 
@@ -39,6 +40,9 @@ router.post("/contact", async (req, res, next) => {
       company: company || "",
       message,
     });
+
+    // Send emails in the background (asynchronous, non-blocking)
+    sendContactEmails({ name, email, company, message });
 
     res.status(201).json({ success: true, message: "Thank you! Your message has been received." });
   } catch (error) {
