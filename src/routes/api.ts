@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import Message from "../models/Message.js";
 
 const router = Router();
@@ -14,6 +15,11 @@ router.get("/health", (req, res) => {
 router.post("/contact", async (req, res, next) => {
   try {
     const { name, email, company, message } = req.body;
+
+    if (mongoose.connection.readyState !== 1) {
+      res.status(503).json({ error: "Database connection is offline. Please verify configurations and try again later." });
+      return;
+    }
 
     if (!name || !email || !message) {
       res.status(400).json({ error: "Name, email, and message are required." });
