@@ -11,7 +11,7 @@ export async function sendContactEmails(data: {
   const adminRecipient = process.env.EMAIL_TO || "yogeshpatel.pers@gmail.com";
 
   if (!apiKey) {
-    console.warn("Brevo API key (BREVO_API_KEY or SMTP_PASS) not configured. Skipping email notifications.");
+    console.warn("Brevo API key (BREVO_API_KEY) not configured. Skipping email notifications.");
     return;
   }
 
