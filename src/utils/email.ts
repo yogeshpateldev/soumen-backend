@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { BrevoClient } from "@getbrevo/brevo";
 
 export async function sendContactEmails(data: {
   name: string;
@@ -6,35 +6,21 @@ export async function sendContactEmails(data: {
   company?: string;
   message: string;
 }) {
-  const host = process.env.SMTP_HOST || "smtp-relay.brevo.com";
-  const port = Number(process.env.SMTP_PORT || 587);
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const apiKey = process.env.BREVO_API_KEY || process.env.SMTP_PASS;
   const from = process.env.EMAIL_FROM || "yogeshpatel.pers@gmail.com";
   const adminRecipient = process.env.EMAIL_TO || "yogeshpatel.pers@gmail.com";
 
-  if (!user || !pass) {
-    console.warn("SMTP credentials not configured. Skipping email notifications.");
+  if (!apiKey) {
+    console.warn("Brevo API key (BREVO_API_KEY or SMTP_PASS) not configured. Skipping email notifications.");
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: {
-      user,
-      pass,
-    },
-  });
+  const brevo = new BrevoClient({ apiKey });
 
   // 1. Email to the Visitor (Confirmation)
-  const visitorMailOptions = {
-    from: `"Soumen Bhatta" <${from}>`,
-    to: data.email,
+  const visitorMail = {
     subject: "Thank you for getting in touch!",
-    text: `Hi ${data.name},\n\nThank you for reaching out! This email confirms that we have received your message regarding: "${data.message.substring(0, 60)}...".\n\nI or someone from the team will get back to you shortly.\n\nBest regards,\nSoumen Bhatta\nFounder & Group CEO, Cuatro Labs`,
-    html: `
+    htmlContent: `
       <div style="font-family: sans-serif; color: #333; max-width: 600px; line-height: 1.6;">
         <h2 style="color: #1e293b;">Thank you for getting in touch!</h2>
         <p>Hi <strong>${data.name}</strong>,</p>
@@ -51,15 +37,14 @@ export async function sendContactEmails(data: {
         </p>
       </div>
     `,
+    sender: { name: "Soumen Bhatta", email: from },
+    to: [{ email: data.email, name: data.name }],
   };
 
   // 2. Email to Admin (Notification)
-  const adminMailOptions = {
-    from: `"Portfolio Site" <${from}>`,
-    to: adminRecipient,
+  const adminMail = {
     subject: `New Contact Submission from ${data.name}`,
-    text: `You have received a new message from your portfolio site contact form:\n\nName: ${data.name}\nEmail: ${data.email}\nCompany: ${data.company || "N/A"}\n\nMessage:\n${data.message}`,
-    html: `
+    htmlContent: `
       <div style="font-family: sans-serif; color: #333; max-width: 600px; line-height: 1.6;">
         <h2 style="color: #1e293b;">New Contact Submission</h2>
         <p>You have received a new contact submission from your portfolio website:</p>
@@ -83,15 +68,17 @@ export async function sendContactEmails(data: {
         </div>
       </div>
     `,
+    sender: { name: "Portfolio Site", email: from },
+    to: [{ email: adminRecipient, name: "Admin" }],
   };
 
   try {
     await Promise.all([
-      transporter.sendMail(visitorMailOptions),
-      transporter.sendMail(adminMailOptions),
+      brevo.transactionalEmails.sendTransacEmail(visitorMail),
+      brevo.transactionalEmails.sendTransacEmail(adminMail),
     ]);
-    console.log("Contact submission emails sent successfully.");
+    console.log("Contact submission emails sent successfully via Brevo SDK.");
   } catch (error) {
-    console.error("Failed to send contact submission emails:", error);
+    console.error("Failed to send contact submission emails via Brevo SDK:", error);
   }
 }
