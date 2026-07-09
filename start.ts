@@ -1,4 +1,5 @@
 import createApp from "./src/app.js";
+import connectDatabase from "./src/db.js";
 
 // Load environment variables from .env if supported and present
 try {
@@ -10,6 +11,9 @@ try {
 }
 
 const PORT = Number(process.env.PORT ?? 4000);
+
+// Connect to database
+connectDatabase();
 
 const app = createApp();
 
