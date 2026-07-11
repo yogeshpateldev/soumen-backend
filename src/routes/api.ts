@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Message from "../models/Message.js";
+import Post from "../models/Post.js";
 import { sendContactEmails } from "../utils/email.js";
 
 const router = Router();
@@ -50,8 +51,55 @@ router.post("/contact", async (req, res, next) => {
   }
 });
 
+// GET /api/posts
+router.get("/posts", async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      res.status(503).json({ error: "Database connection is offline." });
+      return;
+    }
+
+    const posts = await Post.find().sort({ timestamp: -1 });
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/posts/like/:id
+router.post("/posts/like/:id", async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      res.status(503).json({ error: "Database connection is offline." });
+      return;
+    }
+
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: "Invalid post ID format." });
+      return;
+    }
+
+    const post = await Post.findByIdAndUpdate(
+      id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found." });
+      return;
+    }
+
+    res.json({ success: true, likes: post.likes });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/hello", (req, res) => {
   res.json({ message: "Hello from the backend API" });
 });
 
 export default router;
+
