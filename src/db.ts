@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
 
+const LINKEDIN_POST_URNS = [
+  "urn:li:activity:7480902428255666176", // Advisory (meeting Mr. Alok Singh)
+  "urn:li:activity:7478774663356149760", // Empowerment (video/ Alia Bhatt)
+  "urn:li:activity:7478116185293639680", // Culture (Selva 1st employee)
+  "urn:li:activity:7477253765671342080", // Hyperlocal (Snana Purnima Gandhinagar)
+  "urn:li:activity:7465663489127362564", // ATOMA launches in 40 cities
+  "urn:li:activity:7446076261745008640", // Founder Pivot
+  "urn:li:activity:7436998370004471808", // Execution Trumps Perfection
+  "urn:li:activity:7435195790798503936"  // Focus on Market Results
+];
+
 const seedPosts = [
   {
     author: "Soumen Bhatta",
@@ -12,7 +23,11 @@ const seedPosts = [
     commentsCount: 32,
     shares: 14,
     postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_leadership-networking-mentorship-activity-7480902428255666176-xFSv",
-    mediaType: "none",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI"
+    ],
+    mediaType: "image",
     tag: "ADVISORY",
     title: "Advisory & Sustainable Scaling",
     readTime: "3 min read"
@@ -27,7 +42,11 @@ const seedPosts = [
     commentsCount: 48,
     shares: 19,
     postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_womenempowerment-leadership-inspiration-activity-7478774663356149760-Wv8W",
-    mediaType: "none",
+    mediaUrl: "https://dms.licdn.com/playlist/vid/v2/D4D05AQHiFPA3JAHZfw/thumbnail-with-play-button-overlay-high/B4DZ8nx5MFJ8C0-/0/1783078823878?e=2147483647&v=beta&t=k3DUn6stPLg7-EDL2W1VsfV-zmVKo9kJ5cBZFydvjpk",
+    mediaUrls: [
+      "https://dms.licdn.com/playlist/vid/v2/D4D05AQHiFPA3JAHZfw/thumbnail-with-play-button-overlay-high/B4DZ8nx5MFJ8C0-/0/1783078823878?e=2147483647&v=beta&t=k3DUn6stPLg7-EDL2W1VsfV-zmVKo9kJ5cBZFydvjpk"
+    ],
+    mediaType: "image",
     tag: "EMPOWERMENT",
     title: "Women's Empowerment & Inspiration",
     readTime: "2 min read"
@@ -42,6 +61,10 @@ const seedPosts = [
     commentsCount: 22,
     shares: 8,
     postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_cuatrolabs-workanniversary-firstemployee-activity-7478116185293639680-C_H2",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D5622AQGWQ5M_O3o2Vw/feedshare-shrink_1280/B56Z8ebCatKUAQ-/0/1782921832421?e=2147483647&v=beta&t=fNPL_3oum4ie2QkaV-HE0zYa7yhTCHLZHmme5LIXeJQ",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D5622AQGWQ5M_O3o2Vw/feedshare-shrink_1280/B56Z8ebCatKUAQ-/0/1782921832421?e=2147483647&v=beta&t=fNPL_3oum4ie2QkaV-HE0zYa7yhTCHLZHmme5LIXeJQ"
+    ],
     mediaType: "image",
     tag: "CULTURE",
     title: "First Hires & Startup Trust",
@@ -57,29 +80,255 @@ const seedPosts = [
     commentsCount: 65,
     shares: 42,
     postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_jaijagannath-snanapurnima-atoma-activity-7477253765671342080-4L-l",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D4D22AQFnp1VCZnK12w/feedshare-shrink_800/B4DZ8SKrIGI0Ac-/0/1782716216239?e=2147483647&v=beta&t=Xvqzu12QjhR2GjM68BV9yXB-hiJD7uFbs-NVdva8zYw",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D4D22AQFnp1VCZnK12w/feedshare-shrink_800/B4DZ8SKrIGI0Ac-/0/1782716216239?e=2147483647&v=beta&t=Xvqzu12QjhR2GjM68BV9yXB-hiJD7uFbs-NVdva8zYw"
+    ],
     mediaType: "image",
     tag: "HYPERLOCAL",
     title: "Offline Branding & Hyperlocal Beginnings",
     readTime: "3 min read"
+  },
+  {
+    author: "Soumen Bhatta",
+    authorTitle: "Founder & Group CEO, Cuatro Labs | Entrepreneur | Growth Architect | Industry Innovator",
+    authorAvatar: "/src/assets/profile-photo.jpg",
+    content: "We are thrilled to share that ATOMA is launching across 40 Indian cities by the end of June! Our mission is to scale our beauty-tech ecosystem and bring trusted salon professionals directly to consumer doorsteps while creating dignified earning opportunities for service professionals across India.\n\n#Atoma #Ahmedabad #StartupIndia #BeautyTech #Hyperlocal",
+    timestamp: new Date("2026-06-15T10:00:00Z"),
+    likes: 215,
+    commentsCount: 38,
+    shares: 12,
+    postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_atoma-ahmedabad-startupindia-activity-7465663489127362564-ykAb",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI"
+    ],
+    mediaType: "image",
+    tag: "EXPANSION",
+    title: "ATOMA Launches in 40 Indian Cities by June End",
+    readTime: "1 min read"
+  },
+  {
+    author: "Soumen Bhatta",
+    authorTitle: "Founder & Group CEO, Cuatro Labs | Entrepreneur | Growth Architect | Industry Innovator",
+    authorAvatar: "/src/assets/profile-photo.jpg",
+    content: "A pivot is a decision backed by clarity. Staying on a dead road is a decision backed by ego.\n\nAs founders, we must always look at market facts over personal pride. If a model is not scaling, admitting wrong turns and changing direction is not a failure — it's the only path to growth.\n\n#Founder #StartupLife #Entrepreneurship #Pivot #GrowthMindset",
+    timestamp: new Date("2026-05-20T11:00:00Z"),
+    likes: 198,
+    commentsCount: 29,
+    shares: 9,
+    postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_founder-startuplife-entrepreneurship-activity-7446076261745008640-M55_",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D4D22AQFnp1VCZnK12w/feedshare-shrink_800/B4DZ8SKrIGI0Ac-/0/1782716216239?e=2147483647&v=beta&t=Xvqzu12QjhR2GjM68BV9yXB-hiJD7uFbs-NVdva8zYw",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D4D22AQFnp1VCZnK12w/feedshare-shrink_800/B4DZ8SKrIGI0Ac-/0/1782716216239?e=2147483647&v=beta&t=Xvqzu12QjhR2GjM68BV9yXB-hiJD7uFbs-NVdva8zYw"
+    ],
+    mediaType: "image",
+    tag: "LEADERSHIP",
+    title: "Founder Pivot: Admitting Wrong Turns",
+    readTime: "2 min read"
+  },
+  {
+    author: "Soumen Bhatta",
+    authorTitle: "Founder & Group CEO, Cuatro Labs | Entrepreneur | Growth Architect | Industry Innovator",
+    authorAvatar: "/src/assets/profile-photo.jpg",
+    content: "Execution is everything. You can have the most beautiful business plans and slide decks, but if you cannot execute on the ground, they are worth nothing. Launch fast, iterate based on real feedback, and build momentum.\n\n#Entrepreneurship #StartupMindset #FounderLife #Execution",
+    timestamp: new Date("2026-05-05T09:00:00Z"),
+    likes: 172,
+    commentsCount: 18,
+    shares: 5,
+    postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_entrepreneurship-startupmindset-founderlife-activity-7436998370004471808-1_6w",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D5622AQGWQ5M_O3o2Vw/feedshare-shrink_1280/B56Z8ebCatKUAQ-/0/1782921832421?e=2147483647&v=beta&t=fNPL_3oum4ie2QkaV-HE0zYa7yhTCHLZHmme5LIXeJQ",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D5622AQGWQ5M_O3o2Vw/feedshare-shrink_1280/B56Z8ebCatKUAQ-/0/1782921832421?e=2147483647&v=beta&t=fNPL_3oum4ie2QkaV-HE0zYa7yhTCHLZHmme5LIXeJQ"
+    ],
+    mediaType: "image",
+    tag: "STRATEGY",
+    title: "Execution Trumps Perfection in Business",
+    readTime: "2 min read"
+  },
+  {
+    author: "Soumen Bhatta",
+    authorTitle: "Founder & Group CEO, Cuatro Labs | Entrepreneur | Growth Architect | Industry Innovator",
+    authorAvatar: "/src/assets/profile-photo.jpg",
+    content: "Most founders fall in love with their vision. But the market doesn't care about your vision; it cares about value. Listen to the customers, look at the purchase signals, and prioritize market results over personal bias.\n\n#Startup #GTM #MarketFit #GrowthArchitecture",
+    timestamp: new Date("2026-04-28T14:00:00Z"),
+    likes: 210,
+    commentsCount: 35,
+    shares: 11,
+    postUrl: "https://www.linkedin.com/posts/soumen-bhatta-370122198_most-founders-fall-in-love-with-their-vision-activity-7435195790798503936--1P-",
+    mediaUrl: "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI",
+    mediaUrls: [
+      "https://media.licdn.com/dms/image/v2/D4D22AQH5JEwAACxpvg/feedshare-shrink_800/B4DZ9GBHNyK8Ag-/0/1783586125043?e=2147483647&v=beta&t=mmrZAQzOW4PvZfj8mXoV9XFhqQ0Ng_GiV8d4fWDi9NI"
+    ],
+    mediaType: "image",
+    tag: "STRATEGY",
+    title: "Founders: Prioritize Market Results Over Vision",
+    readTime: "2 min read"
   }
 ];
 
+function decodeHTMLEntities(str: string): string {
+  return str
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ");
+}
+
+export async function syncLinkedInPosts() {
+  console.log("Syncing posts dynamically from LinkedIn embeds...");
+  const syncedPosts: any[] = [];
+
+  for (const urn of LINKEDIN_POST_URNS) {
+    try {
+      const url = `https://www.linkedin.com/embed/feed/update/${urn}`;
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.5"
+        }
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`LinkedIn embed returned HTTP status ${response.status}`);
+      }
+
+      const html = await response.text();
+
+      // 1. Extract post text content from description meta
+      const matchDesc = html.match(/<meta\s+name="description"\s+content="([\s\S]*?)"\s*\/?>/) || html.match(/<meta\s+property="og:description"\s+content="([\s\S]*?)"\s*\/?>/);
+      if (!matchDesc) {
+        throw new Error("Could not find post content in embed HTML description");
+      }
+      const rawContent = matchDesc[1];
+      const content = decodeHTMLEntities(rawContent);
+
+      // 2. Extract ALL image attachments from HTML
+      const mediaUrls: string[] = [];
+      const delayMatches = html.matchAll(/data-delayed-url="([^"]+)"/g);
+      for (const match of delayMatches) {
+        const decodedUrl = decodeHTMLEntities(match[1]);
+        if (decodedUrl.includes("/dms/image/") && !decodedUrl.includes("profile-displayphoto") && !mediaUrls.includes(decodedUrl)) {
+          mediaUrls.push(decodedUrl);
+        }
+      }
+
+      const srcMatches = html.matchAll(/src="([^"]+)"/g);
+      for (const match of srcMatches) {
+        const decodedUrl = decodeHTMLEntities(match[1]);
+        if (decodedUrl.includes("/dms/image/") && !decodedUrl.includes("profile-displayphoto") && !decodedUrl.includes("logo-linkedin") && !decodedUrl.includes("favicon") && !mediaUrls.includes(decodedUrl)) {
+          mediaUrls.push(decodedUrl);
+        }
+      }
+
+      const mediaUrl = mediaUrls[0] || undefined;
+      const mediaType = mediaUrls.length > 0 ? "image" : "none";
+
+      // 3. Extract reactions count
+      const matchReactions = html.match(/data-test-id="social-actions__reaction-count"[^>]*>\s*([\d,]+)\s*<\/span>/);
+      const likes = matchReactions ? parseInt(matchReactions[1].replace(/,/g, "")) : 0;
+
+      // 4. Extract comments count
+      const matchComments = html.match(/data-num-comments="(\d+)"/) || html.match(/data-id="social-actions__comments"[^>]*data-num-comments="(\d+)"/);
+      const commentsCount = matchComments ? parseInt(matchComments[1]) : 0;
+
+      // 5. Extract relative time (e.g., "1w", "3mo")
+      const matchTime = html.match(/<time[^>]*>\s*([\s\S]*?)\s*<\/time>/);
+      const rawTime = matchTime ? matchTime[1].replace(/<[^>]*>/g, "").trim() : "";
+      
+      // Compute relative timestamp
+      let timestamp = new Date();
+      if (rawTime) {
+        const num = parseInt(rawTime);
+        if (!isNaN(num)) {
+          if (rawTime.includes("d")) timestamp.setDate(timestamp.getDate() - num);
+          else if (rawTime.includes("w")) timestamp.setDate(timestamp.getDate() - num * 7);
+          else if (rawTime.includes("mo") || rawTime.includes("m")) timestamp.setMonth(timestamp.getMonth() - num);
+          else if (rawTime.includes("y")) timestamp.setFullYear(timestamp.getFullYear() - num);
+        }
+      }
+
+      // 6. Deduce tag and title dynamically
+      const hashMatch = content.match(/#(\w+)/);
+      const tag = hashMatch ? hashMatch[1].toUpperCase() : "JOURNAL";
+
+      const titleLine = content.split("\n")[0].trim().replace(/[❤️🚀🙏🎉]/g, "");
+      const title = titleLine.length > 50 ? titleLine.slice(0, 47) + "..." : titleLine || "Startup Journal Entry";
+
+      // Read time
+      const wordCount = content.split(/\s+/).length;
+      const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
+
+      syncedPosts.push({
+        author: "Soumen Bhatta",
+        authorTitle: "Founder & Group CEO, Cuatro Labs | Entrepreneur | Growth Architect | Industry Innovator",
+        authorAvatar: "/src/assets/profile-photo.jpg",
+        content,
+        timestamp,
+        likes: likes || seedPosts[syncedPosts.length]?.likes || 10,
+        commentsCount: commentsCount || seedPosts[syncedPosts.length]?.commentsCount || 2,
+        shares: 0,
+        postUrl: `https://www.linkedin.com/posts/soumen-bhatta-370122198_activity-${urn.split(":").pop()}`,
+        mediaUrl,
+        mediaUrls,
+        mediaType,
+        tag,
+        title,
+        readTime
+      });
+
+    } catch (err: any) {
+      console.warn(`Could not fetch post URN ${urn} from LinkedIn embeds:`, err.message);
+    }
+  }
+
+  if (syncedPosts.length > 0) {
+    console.log(`Success! Synced ${syncedPosts.length} posts dynamically from LinkedIn.`);
+    await Post.deleteMany({});
+    await Post.insertMany(syncedPosts);
+    return syncedPosts;
+  } else {
+    console.warn("LinkedIn embed sync returned zero results. Retaining existing posts or seeding fallbacks.");
+    const count = await Post.countDocuments();
+    if (count === 0) {
+      await Post.insertMany(seedPosts);
+    }
+    return null;
+  }
+}
+
 export async function connectDatabase() {
-  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
+  const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/portfolio";
   
   try {
     await mongoose.connect(uri);
     console.log("Connected to MongoDB successfully.");
     
-    // Always refresh posts in development to ensure any schema/data changes are applied
-    console.log("Refreshing database with default LinkedIn posts...");
-    await Post.deleteMany({});
-    await Post.insertMany(seedPosts);
-    console.log("LinkedIn posts seeded successfully.");
+    // Seed initial posts if db is empty
+    const count = await Post.countDocuments();
+    if (count === 0) {
+      console.log("Seeding initial posts...");
+      await Post.insertMany(seedPosts);
+    } else {
+      // Ensure existing records have mediaUrls structure if previously missing
+      const allPosts = await Post.find();
+      for (const p of allPosts) {
+        if (!p.mediaUrls || p.mediaUrls.length === 0) {
+          p.mediaUrls = p.mediaUrl ? [p.mediaUrl] : [];
+          await p.save();
+        }
+      }
+    }
+    
+    // Perform an asynchronous sync on server start to refresh post details with dynamic LinkedIn data
+    syncLinkedInPosts().catch(err => console.error("Initial LinkedIn sync error:", err.message));
+
   } catch (error) {
     console.error("MongoDB connection error:", error);
   }
 }
 
 export default connectDatabase;
-

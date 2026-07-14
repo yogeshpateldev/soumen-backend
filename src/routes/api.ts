@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import Post from "../models/Post.js";
 import { sendContactEmails } from "../utils/email.js";
+import { syncLinkedInPosts } from "../db.js";
 
 const router = Router();
 
@@ -61,6 +62,22 @@ router.get("/posts", async (req, res, next) => {
 
     const posts = await Post.find().sort({ timestamp: -1 });
     res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/posts/sync
+router.post("/posts/sync", async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      res.status(503).json({ error: "Database connection is offline." });
+      return;
+    }
+
+    await syncLinkedInPosts();
+    const posts = await Post.find().sort({ timestamp: -1 });
+    res.json({ success: true, posts });
   } catch (error) {
     next(error);
   }

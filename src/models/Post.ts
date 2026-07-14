@@ -11,6 +11,7 @@ export interface IPost extends Document {
   shares: number;
   postUrl?: string;
   mediaUrl?: string;
+  mediaUrls: string[];
   mediaType: "image" | "none";
   tag?: string;
   title?: string;
@@ -28,6 +29,7 @@ const postSchema = new Schema<IPost>({
   shares: { type: Number, default: 0 },
   postUrl: { type: String },
   mediaUrl: { type: String },
+  mediaUrls: { type: [String], default: [] },
   mediaType: { type: String, enum: ["image", "none"], default: "none" },
   tag: { type: String },
   title: { type: String },
